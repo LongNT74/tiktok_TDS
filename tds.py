@@ -2,9 +2,10 @@
 import os
 from time import sleep
 from datetime import datetime
-
+import uiautomator2 as u2
 os.environ['TZ'] = 'Asia/Ho_Chi_Minh'
-
+# Kết nối với thiết bị hiện tại (local)
+d = u2.connect()  # Mặc định là localhost nếu chạy trên điện thoại
 try:
 	import requests
 except:
@@ -243,8 +244,11 @@ if check_log == 'success':
 				link = job['link']
 				os.system(f'termux-open-url {link}')
 				sleep(3)
-				os.system('am start -n org.autojs.autojs/com.stardust.autojs.execution.ScriptExecuteActivity '
-                      '-e "scriptPath" "/sdcard/follow_tiktok.js"')
+				if d(textMatches="Follow").exists:
+					d(textMatches="Follow").click()
+					print("✅ Đã nhấn Follow")
+				else:
+					print("❌ Không tìm thấy nút Follow")
 				check_duyet = duyet_job(type_duyet, token_tds, uid)
 				
 				if check_duyet != 'error':
